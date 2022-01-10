@@ -15,48 +15,62 @@ library(magrittr)
 ```
 
 # Goal
+
 We are trying to determine which products have high association i.e. those that are likely to be bought together
 
 We will imPlement this using Market Basket Analysis (MBA), which uses Association Rule Mining (Apriori algorithm)
 
 # Association Rules
 
-* If-then statements that helps us to show the probability of relationships between data items withIn large data sets
-* Eg
-    * *Movie Recommendation*: If they watched this, then they also watched this.
-    * *Market Basket Optimisation* : If they bought this, then they also bought this
-* Has two parts:
-    1. An antecedent (if) - An item found within the data
-    1. A consequent (then) - An item found in combination with the data
-* An association rule for items $M_1$ (antecedent) and $M_2$ (consequent) can then be expressed as:
+-   If-then statements that helps us to show the probability of relationships between data items withIn large data sets
 
-$M_1 \rightarrow M_2$  i.e. representation of having item $M_2$ on the itemset which has $M_1$ on it
+-   Eg
 
-*  **Note that implication here is co-occurrence and not causality**
-* There are three metrics that help us understand the strength of the relationship (rule):
-    1. **Support** -indicates how frequently the itemset occurs
-         
-       * Support($M_1 \rightarrow M_2$  ) = $\frac{\text{# transaction containing $M_1$ and $M_2$}}{\text{# transaction}}$
+    -   *Movie Recommendation*: If they watched this, then they also watched this.
+    -   *Market Basket Optimisation* : If they bought this, then they also bought this
 
-    2. **Confidence** - the number of times the rule is found to be true (i.e. likelines of occurrence of consequent given the the antecedent has occurred)
+-   Has two parts:
 
-     * Confidence($M_1 \rightarrow M_2$  ) = $\frac{\text{# transaction containing $M_1$ and $M_2$}}{\text{# transaction containing $M_1$ }}$
- 
-    3. **Lift** - How many times the rule is expected to be found true
-        * Ratio of confidence to the baseline probability of occurrence of the consequent
-        * Think of it as the *lift* that $M_1$ provides to our confdence for having $M_2$ on the itemset
-        *  IOW: lift is the rise in probability of having $M_2$ on the cart with the knowledge of $M_1$ being present over the probability of having $M_2$ on the cart without any knowledge about presence of $M_1$
-     * Lift($M_1 \rightarrow M_2$  ) =$\frac{\text{confidence}(M_1 \rightarrow M_2)}{\text{support}(M_2)}$ = $\frac{\frac{\text{# user transactions containing $M_1$ and $M_2$}}{\text{# user transactions containing $M_1$}}}{\text{# user transactions containing $M_2$}}$
-     * In cases where $M_1$ actually leads to $M_2$, value of lift will be greater than 1
-     * Generally:
-         * A value of lift greater than 1 vouches for high association i.e. having $M_1$ on the itemset increases the chances of having $M_2$ on the itemset
-         * If the value is positive, there is a positive correlation
-         * If the value is negative, there is a negative correlation
-         * If the value is 1, there is no correlation
- * The general worflow is:
-     1. Generate an itemset from a list all items
-     1. Generate a rule for each item set
-   
+    1.  An antecedent (if) - An item found within the data
+    2.  A consequent (then) - An item found in combination with the data
+
+-   An association rule for items $M_1$ (antecedent) and $M_2$ (consequent) can then be expressed as:
+
+$M_1 \rightarrow M_2$ i.e. representation of having item $M_2$ on the itemset which has $M_1$ on it
+
+-   **Note that implication here is co-occurrence and not causality**
+
+-   There are three metrics that help us understand the strength of the relationship (rule):
+
+    1.  **Support** -indicates how frequently the itemset occurs
+
+        -   Support($M_1 \rightarrow M_2$ ) = $\frac{\text{# transaction containing $M_1$ and $M_2$}}{\text{# transaction}}$
+
+    2.  **Confidence** - the number of times the rule is found to be true (i.e. likelines of occurrence of consequent given the the antecedent has occurred)
+
+    -   Confidence($M_1 \rightarrow M_2$ ) = $\frac{\text{# transaction containing $M_1$ and $M_2$}}{\text{# transaction containing $M_1$ }}$
+
+    3.  **Lift** - How many times the rule is expected to be found true
+
+        -   Ratio of confidence to the baseline probability of occurrence of the consequent
+        -   Think of it as the *lift* that $M_1$ provides to our confdence for having $M_2$ on the itemset
+        -   IOW: lift is the rise in probability of having $M_2$ on the cart with the knowledge of $M_1$ being present over the probability of having $M_2$ on the cart without any knowledge about presence of $M_1$
+
+    -   Lift($M_1 \rightarrow M_2$ ) =$\frac{\text{confidence}(M_1 \rightarrow M_2)}{\text{support}(M_2)}$ = $\frac{\frac{\text{# user transactions containing $M_1$ and $M_2$}}{\text{# user transactions containing $M_1$}}}{\text{# user transactions containing $M_2$}}$
+
+    -   In cases where $M_1$ actually leads to $M_2$, value of lift will be greater than 1
+
+    -   Generally:
+
+        -   A value of lift greater than 1 vouches for high association i.e. having $M_1$ on the itemset increases the chances of having $M_2$ on the itemset
+        -   If the value is positive, there is a positive correlation
+        -   If the value is negative, there is a negative correlation
+        -   If the value is 1, there is no correlation
+
+-   The general worflow is:
+
+    1.  Generate an itemset from a list all items
+    2.  Generate a rule for each item set
 
 # Importing Data
 
@@ -67,6 +81,7 @@ file_path <- "Import files/Market_Basket_Optimisation.csv"
 data <-  read_csv(file_path, col_names = FALSE)
 
 ```
+
 Each row represents the transactions for individual customers
 
 # Data Preprocessing
@@ -101,17 +116,17 @@ itemFrequencyPlot(dataset,
 
 The basic steps in implementing the Apriori algorithm are as follows:
 
-1. Set up a minimum support and confidence
+1.  Set up a minimum support and confidence
 
-1. Take all the subsets in transactions having higher support than the minimum support
+2.  Take all the subsets in transactions having higher support than the minimum support
 
-1. Take all the subsets in transactions having higher confidence than the minimum confidence
+3.  Take all the subsets in transactions having higher confidence than the minimum confidence
 
-1. Sort the rules by decresing lift
+4.  Sort the rules by decresing lift
 
 The choice of support(how frequently the item appears in your data set) and confidence (frequency of the rule) varies by business case: depends on the goal, data size etc
 
-For minimum support, we want products that are bought at least two times a day i.e. 2*7/len(dataset).
+For minimum support, we want products that are bought at least two times a day i.e. 2\*7/len(dataset).
 
 Minimum length is an specifies the minimum number of products you'd like to have in your rule (Not mandatory to include this)
 
@@ -134,6 +149,7 @@ rules <- rules[-subset.rules] # remove subset rules.
 ```
 
 # Rules Arranged by Lift (i.e. starting with those with high association)
+
 ```{r}
 rules_df <- DATAFRAME(rules) %>% arrange(desc(lift))
 
@@ -151,9 +167,9 @@ plot(rules,jitter = 0, engine = "plotly")
 
 ```
 
-* Rules with high confidence tend to have low support, and vice versa
+-   Rules with high confidence tend to have low support, and vice versa
 
-* Rules with high lift tend to have relatively low support
+-   Rules with high lift tend to have relatively low support
 
 ## Relationship between support, confidence and Number of items in the rule (order)
 
@@ -161,7 +177,7 @@ plot(rules,jitter = 0, engine = "plotly")
 plot(rules, method = "two-key plot")
 ```
 
-* The order and support have a very strong inverse relationship i.e. as order increases, the support decreases
+-   The order and support have a very strong inverse relationship i.e. as order increases, the support decreases
 
 ## Network Graph Visualisation
 
@@ -190,9 +206,7 @@ plot(subrules, method = "graph",
 
 ```
 
-
 ```{r}
 # Shiny App for Interactive Manipulations and Visualization
 #ruleExplorer(subrules, sidebarWidth = 2, graphHeight = '600px')
 ```
-
