@@ -185,33 +185,14 @@ pre code {
 <li>An antecedent (if) - An item found within the data</li>
 <li>A consequent (then) - An item found in combination with the data</li>
 </ol></li>
-<li>An association rule for items <span class="math inline">\(M_1\)</span> (antecedent) and <span class="math inline">\(M_2\)</span> (consequent) can then be expressed as:</li>
-</ul>
-<p>$ M_1 M_2$ i.e. representation of having item <span class="math inline">\(M_2\)</span> on the itemset which has <span class="math inline">\(M_1\)</span> on it</p>
-<ul>
 <li><strong>Note that implication here is co-occurrence and not causality</strong></li>
 <li>There are three metrics that help us understand the strength of the relationship (rule):
 <ol style="list-style-type: decimal">
-<li><p><strong>Support</strong> -indicates how frequently the itemset occurs</p>
-<ul>
-<li>Support($ M_1 M_2$ ) = <span class="math inline">\(\frac{\text{# transaction containing $M_1$ and $M_2$}}{\text{# transaction}}\)</span></li>
-</ul></li>
+<li><p><strong>Support</strong> -indicates how frequently the itemset occurs</p></li>
 <li><p><strong>Confidence</strong> - the number of times the rule is found to be true (i.e. likelines of occurrence of consequent given the the antecedent has occurred)</p></li>
-</ol>
-<ul>
-<li>Confidence($ M_1 M_2$ ) = <span class="math inline">\(\frac{\text{# transaction containing $M_1$ and $M_2$}}{\text{# transaction containing $M_1$ }}\)</span></li>
-</ul>
-<ol start="3" style="list-style-type: decimal">
-<li><strong>Lift</strong> - How many times the rule is expected to be found true
+<li><p><strong>Lift</strong> - How many times the rule is expected to be found true</p>
 <ul>
 <li>Ratio of confidence to the baseline probability of occurrence of the consequent</li>
-<li>Think of it as the <em>lift</em> that <span class="math inline">\(M_1\)</span> provides to our confdence for having <span class="math inline">\(M_2\)</span> on the itemset</li>
-<li>IOW: lift is the rise in probability of having <span class="math inline">\(M_2\)</span> on the cart with the knowledge of <span class="math inline">\(M_1\)</span> being present over the probability of having <span class="math inline">\(M_2\)</span> on the cart without any knowledge about presence of <span class="math inline">\(M_1\)</span></li>
-</ul></li>
-</ol>
-<ul>
-<li>Lift($ M_1 M_2$ ) =<span class="math inline">\(\frac{\text{confidence}(M_1 \rightarrow M_2)}{\text{support}(M_2)}\)</span> = <span class="math inline">\(\frac{\frac{\text{# user transactions containing $M_1$ and $M_2$}}{\text{# user transactions containing $M_1$}}}{\text{# user transactions containing $M_2$}}\)</span></li>
-<li>In cases where <span class="math inline">\(M_1\)</span> actually leads to <span class="math inline">\(M_2\)</span>, value of lift will be greater than 1</li>
 <li>Generally:
 <ul>
 <li>A value of lift greater than 1 vouches for high association i.e. having <span class="math inline">\(M_1\)</span> on the itemset increases the chances of having <span class="math inline">\(M_2\)</span> on the itemset</li>
@@ -220,10 +201,6 @@ pre code {
 <li>If the value is 1, there is no correlation</li>
 </ul></li>
 </ul></li>
-<li>The general worflow is:
-<ol style="list-style-type: decimal">
-<li>Generate an itemset from a list all items</li>
-<li>Generate a rule for each item set</li>
 </ol></li>
 </ul>
 </div>
