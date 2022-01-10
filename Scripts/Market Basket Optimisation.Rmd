@@ -18,7 +18,7 @@ library(magrittr)
 
 We are trying to determine which products have high association i.e. those that are likely to be bought together
 
-We will imPlement this using Market Basket Analysis (MBA), which uses Association Rule Mining (Apriori algorithm)
+We will implement this using Market Basket Analysis (MBA), which uses Association Rule Mining (Apriori algorithm)
 
 # Association Rules
 
