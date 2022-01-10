@@ -1,4 +1,4 @@
-# Masket Bakset Analysis
+# Masket Basket Analysis using R
 Market Basket Analysis using Association Rule Mining (Apriori Algorithm) to determine goods that are frequently bought together.
 
 The data set used is publicly available on [Kaggle](https://www.kaggle.com/sivaram1987/association-rule-learningapriori/version/1).
