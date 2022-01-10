@@ -1,0 +1,157 @@
+---
+title: "Market Basket Analysis"
+author: "Antony Rono"
+date: "10/01/2022"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+
+library(tidyverse)
+library(magrittr)
+```
+
+# Goal
+We are trying to determine which products have high association i.e. those that are likely to be bought together
+
+# Importing Data
+
+```{r results = 'hide'}
+
+file_path <- "Import files/Market_Basket_Optimisation.csv"
+
+data <-  read_csv(file_path, col_names = FALSE)
+
+```
+Each row represents the transactions for individual customers
+
+# Data Preprocessing
+
+We convert the data frame to a sparse matrix (called transactions)
+
+Sparse matrix is a matrix of 0s and 1s, with each row and column representing the various products
+
+```{r}
+library(arules)
+
+dataset <- read.transactions(file_path, sep = ",", rm.duplicates = TRUE )
+
+summary(dataset)
+
+```
+
+# Creating a frequency plot of the sparse matrix (Top 20 most bought products)
+
+```{r}
+library(RColorBrewer)
+itemFrequencyPlot(dataset,
+   topN=20,
+   col=brewer.pal(8,'Pastel2'),
+   main='Relative Item Frequency Plot',
+   type="relative",
+   ylab="Item Frequency (Relative)") 
+
+```
+
+# Training the Apriori Model on the dataset
+
+The basic steps in implementing the Apriori algorithm are as follows:
+
+1. Set up a minimum support and confidence
+
+1. Take all the subsets in transactions having higher support than the minimum support
+
+1. Take all the subsets in transactions having higher confidence than the minimum confidence
+
+1. Sort the rules by decresing lift
+
+The choice of support(how frequently the item appears in your data set) and confidence (frequency of the rule) varies by business case: depends on the goal, data size etc
+
+For minimum support, we want products that are bought at least two times a day i.e. 2*7/len(dataset).
+
+Minimum length is an specifies the minimum number of products you'd like to have in your rule (Not mandatory to include this)
+
+Maximum length specifies the maximum number of products you'd like to have in your rule (Not mandatory to include this)
+
+```{r}
+
+rules <- apriori(dataset, 
+                 parameter = list(support = 14/nrow(dataset),
+                                  confidence = .2,
+                                  minlen = 2,
+                                  maxlen = 20
+                                  )
+                 )
+
+# Removing Redundant Rules
+#rules <- rules[!is.redundant(rules)]
+subset.rules <- which(colSums(is.subset(rules, rules)) > 1) # get subset rules in vector
+rules <- rules[-subset.rules] # remove subset rules.
+```
+
+# Rules Arranged by Lift (i.e. starting with those with high association)
+```{r}
+rules_df <- DATAFRAME(rules) %>% arrange(desc(lift))
+
+DT::datatable(rules_df)
+```
+
+# Visualizing the results (rules)
+
+## Relationship between support, confidence and lift
+
+```{r}
+library(arulesViz)
+
+plot(rules,jitter = 0, engine = "plotly")
+
+```
+
+* Rules with high confidence tend to have low support, and vice versa
+
+* Rules with high lift tend to have relatively low support
+
+## Relationship between support, confidence and Number of items in the rule (order)
+
+```{r}
+plot(rules, method = "two-key plot")
+```
+
+* The order and support have a very strong inverse relationship i.e. as order increases, the support decreases
+
+## Network Graph Visualisation
+
+```{r}
+
+subrules <- head(sort(rules, by="lift"), n = 30, by = "lift")
+
+#plot(subrules, method = "graph", engine = "htmlwidget")
+
+plot(subrules, method = "graph",
+     control = list(
+       # edges = ggraph::geom_edge_link(
+       #   end_cap = ggraph::circle(4, "mm"),
+       #   start_cap = ggraph::circle(4, "mm"),
+       #   color = "black",
+       #   arrow = arrow(length = unit(2, "mm"), angle = 20, type = "closed"),
+       #   alpha = .2
+       # ),
+       nodes = ggraph::geom_node_point(aes_string(size = "support", color = "lift"))
+       #nodetext = ggraph::geom_node_label(aes_string(label = "label"), alpha = .8, repel = TRUE)
+     )
+) +
+  scale_color_gradient(low = "dodgerblue", high = "red") +
+  scale_size(range = c(2, 10))
+
+
+```
+
+
+```{r}
+# Shiny App for Interactive Manipulations and Visualization
+#ruleExplorer(subrules, sidebarWidth = 2, graphHeight = '600px')
+```
+
