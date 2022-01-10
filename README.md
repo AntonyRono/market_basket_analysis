@@ -3,6 +3,8 @@ Market Basket Analysis using Association Rule Mining (Apriori Algorithm) to dete
 
 The data set used is publicly available on [Kaggle](https://www.kaggle.com/sivaram1987/association-rule-learningapriori/version/1).
 
+[(See the Results)](https://antonyrono.github.io/market_basket_analysis/Market-Basket-Optimisation.html)
+
 ## Association Rules
 * If-then statements that helps us to show the probability of relationships between data items withn large data sets
 * Eg
